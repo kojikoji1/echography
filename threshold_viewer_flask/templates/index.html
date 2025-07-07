@@ -1,0 +1,73 @@
+<!doctype html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>画像スライスビューア</title>
+    <style>
+        img { width: 400px; margin: 10px; }
+        .slider-labels {
+            display: flex;
+            justify-content: space-between;
+            width: 300px;
+            font-size: 0.8em;
+            margin-top: -10px;
+        }
+    </style>
+</head>
+<body>
+    <h2>画像スライスビューア</h2>
+
+    <div style="display: flex; justify-content: center;">
+        <div style="text-align: center;">
+            <p>元画像</p>
+            <img src="{{ input_file }}">
+            <p>スライス {{ index + 1 }} / {{ total }}</p>
+        </div>
+        <div style="text-align: center;">
+            <p>処理画像</p>
+            <img src="{{ result_file }}">
+            <p>スライス {{ index + 1 }} / {{ total }}</p>
+        </div>
+    </div>
+
+    <form method="get" action="/">
+        <input type="hidden" name="index" value="{{ index }}">
+        
+        <label>Low: 
+            <input type="range" name="low" min="0" max="255" value="{{ low }}" 
+                   oninput="document.getElementById('low_val').value = this.value" style="width: 300px;">
+        </label>
+        <output id="low_val">{{ low }}</output>
+        <div class="slider-labels">
+            <span>0</span><span>50</span><span>100</span><span>150</span><span>200</span><span>255</span>
+        </div>
+        
+        <label>High: 
+            <input type="range" name="high" min="0" max="255" value="{{ high }}" 
+                   oninput="document.getElementById('high_val').value = this.value" style="width: 300px;">
+        </label>
+        <output id="high_val">{{ high }}</output>
+        <div class="slider-labels">
+            <span>0</span><span>50</span><span>100</span><span>150</span><span>200</span><span>255</span>
+        </div>
+
+        <br><br>
+        <button type="submit">更新</button>
+    </form>
+
+    <form method="get" action="/save_all">
+        <input type="hidden" name="low" value="{{ low }}">
+        <input type="hidden" name="high" value="{{ high }}">
+        <button type="submit">この条件で全画像を一括保存</button>
+    </form>
+
+    <p>
+        {% if index > 0 %}
+            <a href="/?index={{ index - 1 }}&low={{ low }}&high={{ high }}">←前へ</a>
+        {% endif %}
+        {% if index < total - 1 %}
+            <a href="/?index={{ index + 1 }}&low={{ low }}&high={{ high }}">次へ→</a>
+        {% endif %}
+    </p>
+</body>
+</html>
